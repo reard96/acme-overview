@@ -46,15 +46,22 @@ var lineItems = [
 //keys are the ids of products
 //the values are the products themselves
 function generateProductsMap(products){
-  //TODO
+  return products.reduce(function(accum, item) {
+      accum[item.id] = item;
+      return accum;
+  }, {});
 }
 
 //returns an object
 //keys are the ids of products
 //value is the total revenue for that product
 function salesByProduct(products, lineItems){
-  //TODO
-}
+  var productMap = generateProductsMap(products);
+
+  return lineItems.reduce(function(accum, item) {
+    if(accum[item.productId]) {
+
+    }
 
 //return the total revenue for all products
 function totalSales(products, lineItems){
