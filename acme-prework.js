@@ -1,3 +1,5 @@
+// Checked this in repl and all of the functions work
+
 //instructions
 //write the 4 functions below
 //no third party libraries
@@ -14,7 +16,7 @@ var products = [
   {
     id: 2,
     price: 3,
-    name: 'bar' 
+    name: 'bar'
   },
   {
     id: 3,
@@ -40,13 +42,13 @@ var lineItems = [
    {
      productId: 3,
      quantity: 1
-   },
+   }
 ];
 //returns an object
 //keys are the ids of products
 //the values are the products themselves
 function generateProductsMap(products){
-  return products.reduce(function(accum, item) {
+  return products.reduce(function (accum, item) {
       accum[item.id] = item;
       return accum;
   }, {});
@@ -57,22 +59,37 @@ function generateProductsMap(products){
 //value is the total revenue for that product
 function salesByProduct(products, lineItems){
   var productMap = generateProductsMap(products);
-
-  return lineItems.reduce(function(accum, item) {
-    if(accum[item.productId]) {
-
+  var totalItems = lineItems.reduce(function (accum, item) {
+    if (accum[item.productId]) {
+      accum[item.productId] += item.quantity * productMap[item.productId].price;
     }
+    else {
+      accum[item.productId] = item.quantity * productMap[item.productId].price;
+    }
+    return accum;
+  }, {});
+  return totalItems;
+}
 
 //return the total revenue for all products
 function totalSales(products, lineItems){
-  //TODO
-
+  var salesByItem = salesByProduct(products, lineItems);
+  return Object.values(salesByItem).reduce(function (accum, item) {
+     accum += item;
+     return accum;
+  }, 0);
 }
 
 //return the product responsible for the most revenue
 function topSellerByRevenue(products, lineItems){
-  //TODO
+  var salesByItem = salesByProduct(products, lineItems);
+  var rev = Object.values(salesByItem);
+  var max = Math.max(...rev);
+  var indexOfMax = Object.keys(salesByItem).find(key => salesByItem[key] === max);
+  // I chose to return the entire product Object
+  return generateProductsMap(products)[indexOfMax];
 }
+
 console.log(`generates product map - should be
 {
   1:{
@@ -91,13 +108,12 @@ console.log(`generates product map - should be
     price: 9
   }
 }
-
 `, generateProductsMap(products));
 console.log(`sales by product - should be
   {
     1: 10,
     2: 3,
     3: 9
-}`, salesByProduct( products, lineItems));
-console.log('total sales - should be 22', totalSales( products, lineItems));
-console.log('top seller by revenue', topSellerByRevenue(products, lineItems ));
+  }`, salesByProduct(products, lineItems));
+console.log('total sales - should be 22', totalSales(products, lineItems));
+console.log('top seller by revenue', topSellerByRevenue(products, lineItems));
